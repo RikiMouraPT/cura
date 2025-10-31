@@ -8,4 +8,4 @@
 
 ## Estrutura do Projeto
 
-## Licençaa
+## Licença
