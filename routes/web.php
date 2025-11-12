@@ -29,7 +29,45 @@ Route::middleware('guest')->group(function () {
 });
 
 
-Route::get('/app', fn() => view('app.index'))->name('app.index');
+use Carbon\Carbon; // Importa a classe Carbon no topo do teu ficheiro de rotas
+
+Route::get('/app', function () {
+
+    $fakeServices = [
+        (object) [
+            'id' => 1,
+            'type' => 'Enfermagem',
+            'status' => 'pendente',
+            'date' => Carbon::parse('2025-01-25 14:00'),
+            'professional' => (object) [
+                'name' => 'Ana Costa'
+            ]
+        ],
+        (object) [
+            'id' => 2,
+            'type' => 'Auxiliar',
+            'status' => 'ativo',
+            'date' => Carbon::parse('2025-01-23 10:00'),
+            'professional' => (object) [
+                'name' => 'João Silva'
+            ]
+        ],
+        (object) [
+            'id' => 3,
+            'type' => 'Médico',
+            'status' => 'completado',
+            'date' => Carbon::parse('2025-01-20 16:30'),
+            'professional' => (object) [
+                'name' => 'Dr. Pedro Santos'
+            ]
+        ],
+    ];
+
+    return view('app.index', [
+        'recentServices' => $fakeServices
+    ]);
+
+})->name('app.index');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::resource('service', ServiceController::class)->names('app.service');
 Route::resource('profile', ProfileController::class)->names('app.profile');
