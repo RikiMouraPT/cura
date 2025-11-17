@@ -61,7 +61,10 @@ class LogController extends Controller
      */
     public function update(UpdateLogRequest $request, Log $log)
     {
-        // Update the log with validated data
+        // Update the log with validated data from UpdateLogRequest
+        $validated = $request->validated();
+        $log->update($validated);
+        return redirect()->route('logs.index')->with('success', 'Log updated successfully.');
     }
 
     /**
@@ -69,6 +72,8 @@ class LogController extends Controller
      */
     public function destroy(Log $log)
     {
-        //
+        // Delete the specified log
+        $log->delete();
+        return redirect()->route('logs.index')->with('success', 'Log deleted successfully.');
     }
 }

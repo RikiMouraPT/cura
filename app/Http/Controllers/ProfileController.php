@@ -38,6 +38,7 @@ class ProfileController extends Controller
     public function show(Profile $profile)
     {
         //
+        return view('profiles.show', compact('profile'));
     }
 
     /**
@@ -46,6 +47,7 @@ class ProfileController extends Controller
     public function edit(Profile $profile)
     {
         //
+        return view('profiles.edit', compact('profile'));
     }
 
     /**
@@ -54,6 +56,13 @@ class ProfileController extends Controller
     public function update(UpdateProfileRequest $request, Profile $profile)
     {
         //
+        $profile->update($request->validated());
+        
+        $profile = Profile::findOrFail($profile->id);
+        // Update all profile fields to the requested values
+        
+
+        return redirect()->route('profiles.show', $profile)->with('success', 'Profile updated successfully.');
     }
 
     /**
