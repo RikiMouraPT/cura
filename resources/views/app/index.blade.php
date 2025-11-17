@@ -62,7 +62,7 @@
             
             <div class="lg:hidden space-y-4">
                 @foreach($recentServices as $service)
-                    <a href="{{ route('app.service.show', $service) }}" class="block border border-teal-100 rounded-xl p-4 space-y-3 hover:bg-teal-50/50 transition-colors">
+                    <a href="{{ route('app.service.show', $service->id) }}" class="block border border-teal-100 rounded-xl p-4 space-y-3 hover:bg-teal-50/50 transition-colors">
                         <div class="flex items-center justify-between">
                             <span class="font-semibold text-teal-900">{{ $service->type }}</span>
                             
@@ -97,7 +97,7 @@
                     <tbody>
                         @foreach($recentServices as $service)
                             <tr class="border-b border-teal-50 hover:bg-teal-50/50 transition-colors cursor-pointer"
-                                onclick="window.location='{{ route('app.service.show', $service) }}'">
+                                onclick="window.location='{{ route('app.service.show', $service->id) }}'">
                                 
                                 <td class="py-4 px-4 text-teal-900 font-medium">{{ $service->type }}</td>
                                 <td class="py-4 px-4 text-teal-600">{{ $service->date->format('Y-m-d') }}</td>

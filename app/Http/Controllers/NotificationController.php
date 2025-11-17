@@ -13,8 +13,13 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
-        $notifications = Notification::all();
+        $notifications = auth()->user()
+            ->notifications()
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('dashboard', compact('notifications'));
     }
 
     /**

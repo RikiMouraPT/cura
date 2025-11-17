@@ -62,9 +62,16 @@ Route::get('/app', function () {
             ]
         ],
     ];
+    
+    $user = auth()->user();
+
+    $notifications = $user
+        ? $user->notifications()->latest()->limit(10)->get()
+        : collect();
 
     return view('app.index', [
-        'recentServices' => $fakeServices
+        'recentServices' => $fakeServices,
+        'notifications'  => $notifications,
     ]);
 
 })->name('app.index');
