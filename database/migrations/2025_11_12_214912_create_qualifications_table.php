@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('qualifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('description');
+            $table->string('document');
             $table->timestamps();
         });
     }

@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('professional_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('service_type');
+            $table->text('report')->nullable();
+            $table->date('date');
+            $table->time('time');
+            $table->string('location');
+            $table->decimal('price', 8, 2);
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
