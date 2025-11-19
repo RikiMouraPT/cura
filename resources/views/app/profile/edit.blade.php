@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('app.layout.app')
 
 <body class="min-h-screen bg-teal-50/30">
   <!-- Navbar -->
