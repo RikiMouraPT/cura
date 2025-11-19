@@ -13,9 +13,7 @@ class LogController extends Controller
      */
     public function index()
     {
-        // Show all logs
-        $logs = Log::all();
-        return view('logs.index', compact('logs'));
+        //
     }
 
     /**
@@ -23,8 +21,7 @@ class LogController extends Controller
      */
     public function create()
     {
-        // Show form to create a new log
-        return view('logs.create');
+        //
     }
 
     /**
@@ -32,10 +29,9 @@ class LogController extends Controller
      */
     public function store(StoreLogRequest $request)
     {
-        // Validate and store the new log using the validated data via StoreLogRequest
         $validated = $request->validated();
         $log = Log::create($validated);
-        return redirect()->route('logs.index')->with('success', 'Log created successfully.');
+        return;
     }
 
     /**
@@ -44,7 +40,6 @@ class LogController extends Controller
     public function show(Log $log)
     {
         //
-        return view('logs.show', compact('log'));
     }
 
     /**
@@ -53,7 +48,6 @@ class LogController extends Controller
     public function edit(Log $log)
     {
         //
-        return view('logs.edit', compact('log'));
     }
 
     /**
@@ -61,10 +55,7 @@ class LogController extends Controller
      */
     public function update(UpdateLogRequest $request, Log $log)
     {
-        // Update the log with validated data from UpdateLogRequest
-        $validated = $request->validated();
-        $log->update($validated);
-        return redirect()->route('logs.index')->with('success', 'Log updated successfully.');
+        //
     }
 
     /**
@@ -72,8 +63,6 @@ class LogController extends Controller
      */
     public function destroy(Log $log)
     {
-        // Delete the specified log
-        $log->delete();
-        return redirect()->route('logs.index')->with('success', 'Log deleted successfully.');
+        //
     }
 }

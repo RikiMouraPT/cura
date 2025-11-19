@@ -14,8 +14,6 @@ class MedicalInfoController extends Controller
     public function index()
     {
         //
-        $medicalInfos = MedicalInfo::all();
-        return view('medicalinfos.index', compact('medicalInfos'));
     }
 
     /**
@@ -24,7 +22,6 @@ class MedicalInfoController extends Controller
     public function create()
     {
         //
-        return view('medicalinfos.create');
     }
 
     /**

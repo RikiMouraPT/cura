@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('medical_infos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('blood_type')->nullable();
+            $table->text('allergies')->nullable();
+            $table->text('medical_conditions')->nullable();
+            $table->text('current_medications')->nullable();
+            $table->string('emergency_contact')->nullable();
             $table->timestamps();
         });
     }

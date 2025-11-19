@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->integer('phone_number')->nullable();
+            $table->text('profile_picture')->nullable();
+            //User created Enum Role.php
+            $table->enum('user_type', ['patient', 'companion', 'medical assistant', 'nurse', 'doctor']);
+            $table->date('birth_date')->nullable();
+            $table->string('address')->nullable();
+            $table->string('tax_id')->nullable();
+            $table->string('social_security_number')->nullable();          
             $table->timestamps();
         });
     }
