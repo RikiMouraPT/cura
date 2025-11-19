@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use App\Http\Requests\StoreProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use PHPUnit\Logging\OpenTestReporting\TestAbortedSubscriber;
 
 class ProfileController extends Controller
 {
@@ -13,9 +14,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
-        $profiles = Profile::all();
-        return view('app.profile.show', compact('profiles'));
+        abort(404);
     }
 
     /**
@@ -23,7 +22,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -31,7 +30,7 @@ class ProfileController extends Controller
      */
     public function store(StoreProfileRequest $request)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -85,6 +84,11 @@ class ProfileController extends Controller
      */
     public function destroy(Profile $profile)
     {
-        //
+        $profile->medicalInfo()->delete();
+        $profile->qualifications()->delete();
+        $profile->delete();
+        $profile->user()->delete();
+
+        return redirect()->route('landing')->with('success', 'Profile and associated data deleted successfully.');
     }
 }
