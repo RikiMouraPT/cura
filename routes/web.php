@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProfileController;
@@ -63,7 +64,7 @@ Route::get('/app', function () {
         ],
     ];
     
-    $user = auth()->user();
+    $user = Auth::user();
 
     $notifications = $user
         ? $user->notifications()->latest()->limit(10)->get()
