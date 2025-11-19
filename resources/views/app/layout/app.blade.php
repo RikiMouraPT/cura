@@ -20,11 +20,12 @@
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-teal-700">Cura</h1>
 
+            <!-- VERSÃO DESKTOP (escondida em mobile) -->
             <div class="hidden lg:flex items-center space-x-6">
                 <a href="{{ route('app.service.index') }}" class="text-teal-700 hover:text-teal-900 font-medium transition-colors">Serviços</a>
                 <a href="{{ route('app.review.index') }}" class="text-teal-700 hover:text-teal-900 font-medium transition-colors">Avaliações</a>
 
-                <!-- NOTIFICAÇÕES -->
+                <!-- NOTIFICAÇÕES DESKTOP -->
                 <div class="relative">
                     <button id="notifBtn" class="relative p-2 text-teal-700 hover:text-teal-900 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -33,8 +34,8 @@
 
                         @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
                         <span id="notifBadge" 
-                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-                              {{ auth()->user()->unreadNotifications->count() }}
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
+                            {{ auth()->user()->unreadNotifications->count() }}
                         </span>
                         @endif
                     </button>
@@ -47,7 +48,7 @@
                     </button>
 
                     <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
-                        <a href="{{ route('app.profile.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-700">Ver Perfil</a>
+                        <a href="{{ route('app.profile.show', 1) }}" class="block px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-700">Ver Perfil</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="w-full text-left px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-700">Terminar Sessão</button>
@@ -56,12 +57,31 @@
                 </div>
             </div>
 
-            <!-- HAMBURGER MENU -->
-            <button id="menuBtn" class="lg:hidden p-2 text-teal-700 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
+            <!-- VERSÃO MOBILE (visível apenas em mobile) -->
+            <div class="flex lg:hidden items-center gap-2">
+                <!-- NOTIFICAÇÕES MOBILE -->
+                <div class="relative">
+                    <button id="notifBtnMobile" class="relative p-2 text-teal-700 hover:text-teal-900 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path d="M12 22c1.1 0 2-.9 2-2H10a2 2 0 002 2zm6-6V9a6 6 0 10-12 0v7l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+
+                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                        <span id="notifBadgeMobile" 
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
+                            {{ auth()->user()->unreadNotifications->count() }}
+                        </span>
+                        @endif
+                    </button>
+                </div>
+
+                <!-- HAMBURGER MENU -->
+                <button id="menuBtn" class="p-2 text-teal-700 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -102,39 +122,60 @@
 
     <!-- SCRIPTS -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-            // PROFILE DROPDOWN
-            const profileBtn = document.getElementById('profileBtn');
-            const profileMenu = document.getElementById('profileMenu');
-            if (profileBtn && profileMenu) {
-                profileBtn.addEventListener('click', () => {
-                    profileMenu.classList.toggle('hidden');
-                });
-                window.addEventListener('click', (e) => {
-                    if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
-                        profileMenu.classList.add('hidden');
-                    }
-                });
-            }
-
-            // NOTIFICATIONS DROPDOWN
-            const notifBtn = document.getElementById('notifBtn');
-            const notifPopup = document.getElementById('notifPopup');
-            notifBtn.addEventListener('click', () => {
+        // NOTIFICATIONS DROPDOWN
+        const notifBtn = document.getElementById('notifBtn');
+        const notifBtnMobile = document.getElementById('notifBtnMobile');
+        const notifPopup = document.getElementById('notifPopup');
+        
+        if (notifBtn && notifPopup) {
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 notifPopup.classList.toggle('hidden');
             });
+        }
+        
+        if (notifBtnMobile && notifPopup) {
+            notifBtnMobile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifPopup.classList.toggle('hidden');
+            });
+        }
+        
+        // Fechar popup ao clicar fora
+        if (notifPopup) {
             window.addEventListener('click', (e) => {
-                if (!notifPopup.contains(e.target) && !notifBtn.contains(e.target)) {
+                if (!notifPopup.contains(e.target) && 
+                    !notifBtn?.contains(e.target) && 
+                    !notifBtnMobile?.contains(e.target)) {
                     notifPopup.classList.add('hidden');
                 }
             });
+        }
 
-            // SIDEBAR MOBILE
-            const menuBtn = document.getElementById('menuBtn');
-            const mobileSidebar = document.getElementById('mobileSidebar');
-            const overlay = document.getElementById('overlay');
-            const closeSidebar = document.getElementById('closeSidebar');
+        // PROFILE DROPDOWN
+        const profileBtn = document.getElementById('profileBtn');
+        const profileMenu = document.getElementById('profileMenu');
+        if (profileBtn && profileMenu) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('hidden');
+            });
+            window.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        // SIDEBAR MOBILE
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('overlay');
+        const closeSidebar = document.getElementById('closeSidebar');
+        
+        if (menuBtn && mobileSidebar && overlay && closeSidebar) {
             menuBtn.addEventListener('click', () => {
                 mobileSidebar.classList.remove('translate-x-full');
                 overlay.classList.remove('hidden');
@@ -147,31 +188,46 @@
                 mobileSidebar.classList.add('translate-x-full');
                 overlay.classList.add('hidden');
             });
-        });
-
-        // MARCAR NOTIFICAÇÃO COMO LIDA
-        function markAsRead(id) {
-            fetch(`/notifications/${id}/read`, {
-                method: 'POST',
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json"
-                }
-            }).then(() => {
-                const item = document.getElementById(`notification-${id}`);
-                if (item) item.classList.add('opacity-50');
-
-                const badge = document.getElementById('notifBadge');
-                if (badge) {
-                    let n = parseInt(badge.innerText);
-                    if (n > 1) {
-                        badge.innerText = n - 1;
-                    } else {
-                        badge.classList.add('hidden');
-                    }
-                }
-            });
         }
+    });
+
+    // MARCAR NOTIFICAÇÃO COMO LIDA
+    function markAsRead(id) {
+        fetch(`/notifications/${id}/read`, {
+            method: 'POST',
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            }
+        }).then(() => {
+            const item = document.getElementById(`notification-${id}`);
+            if (item) item.classList.add('opacity-50');
+
+            // Atualizar badge desktop
+            const badge = document.getElementById('notifBadge');
+            if (badge) {
+                let n = parseInt(badge.innerText);
+                if (n > 1) {
+                    badge.innerText = n - 1;
+                } else {
+                    badge.remove();
+                }
+            }
+            
+            // Atualizar badge mobile
+            const badgeMobile = document.getElementById('notifBadgeMobile');
+            if (badgeMobile) {
+                let n = parseInt(badgeMobile.innerText);
+                if (n > 1) {
+                    badgeMobile.innerText = n - 1;
+                } else {
+                    badgeMobile.remove();
+                }
+            }
+        }).catch(err => {
+            console.error('Erro ao marcar notificação como lida:', err);
+        });
+    }
     </script>
 
 </body>
