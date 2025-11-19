@@ -14,12 +14,12 @@
                 Visualize e gerencie as suas informações pessoais e médicas.
             </p>
         </div>
-        <button
-            class="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        <a
+            href="{{ route('app.profile.edit', 1 ) }}" class="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
         >
             <i class="lucide lucide-edit w-5 h-5"></i>
             Editar Perfil
-        </button>
+        </a>
     </div>
 
     <div class="grid lg:grid-cols-3 gap-6">
