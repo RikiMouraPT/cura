@@ -10,30 +10,6 @@ use App\Enums\Role;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    public function login(Request $request)
-    {
-        return redirect()->route('app.index');
-        /*$credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->route('app.index');
-        }
-        
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');*/
-    }
-
     public function showRegisterForm()
     {
         return view('auth.register');
@@ -42,26 +18,87 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'terms' => 'required|accepted',
-            'company_code' => 'required|string|max:255|exists:companies,code',
+            // User
+            'user.name' => 'required|string|max:255',
+            'user.email' => 'required|string|email|max:255|unique:users,email',
+            'user.password' => 'required|string|min:8|confirmed',
+
+            // Profile
+            'profile.phone' => 'nullable|string|max:20',
+            'profile.profile_picture' => 'nullable|image|max:2048',
+            'profile.user_type' => 'required|in:patient,companion,medical_assistant,nurse,doctor',
+            'profile.birth_date' => 'nullable|date',
+            'profile.address' => 'nullable|string|max:255',
+            'profile.tax_id' => 'nullable|string|max:50',
+            'profile.social_security_number' => 'nullable|string|max:50',
+
+            // Medical Info
+            'medical_info.blood_type' => 'nullable|string|max:3',
+            'medical_info.allergies' => 'nullable|string|max:500',
+            'medical_info.medical_conditions' => 'nullable|string|max:500',
+            'medical_info.current_medications' => 'nullable|string|max:500',
+            'medical_info.emergency_contact' => 'nullable|string|max:255',
+
+            // Qualifications
+            'qualifications.description' => 'nullable|string|max:1000',
+            'qualifications.document' => 'nullable|file|max:5120',
         ]);
 
         $user = User::create([
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $data['user']['name'],
+            'email' => $data['user']['email'],
+            'password' => Hash::make($data['user']['password']),
+            'role' => Role::from($data['profile']['user_type']),
         ]);
-        $user->profile()->create([
-            'name' => $data['name'],
-            'role' => Role::PATIENT,
+
+        $profile = $user->profile()->create([
+            'phone' => $data['profile']['phone'] ?? null,
+            'birth_date' => $data['profile']['birth_date'] ?? null,
+            'address' => $data['profile']['address'] ?? null,
+            'tax_id' => $data['profile']['tax_id'] ?? null,
+            'social_security_number' => $data['profile']['social_security_number'] ?? null,
+        ]);
+
+        $profile->medicalInfo()->create([
+            'blood_type' => $data['medical_info']['blood_type'] ?? null,
+            'allergies' => $data['medical_info']['allergies'] ?? null,
+            'medical_conditions' => $data['medical_info']['medical_conditions'] ?? null,
+            'current_medications' => $data['medical_info']['current_medications'] ?? null,
+            'emergency_contact' => $data['medical_info']['emergency_contact'] ?? null,
+        ]);
+
+        $profile->qualifications()->create([
+            'description' => $data['qualifications']['description'] ?? null,
+            'document_path' => isset($data['qualifications']['document']) ? $data['qualifications']['document']->store('qualifications', 'public'   ) : null,
         ]);
 
         Auth::login($user);
-        $request->session()->regenerate();
 
         return redirect()->route('app.index');
+    }
+
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()->route('app.index');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)

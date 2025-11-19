@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -13,13 +14,10 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $notifications = auth()->user()
-            ->notifications()
-            ->latest()
-            ->limit(10)
-            ->get();
+        /*$user = Auth::user();
+        $notifications = $user->notifications()->orderBy('created_at', 'desc')->get();
 
-        return view('dashboard', compact('notifications'));
+        return view('app.notifications.index', compact('notifications'));*/
     }
 
     /**
