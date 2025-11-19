@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use App\Http\Requests\StoreProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use PHPUnit\Logging\OpenTestReporting\TestAbortedSubscriber;
 
 class ProfileController extends Controller
 {
@@ -13,7 +14,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -21,7 +22,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -29,7 +30,7 @@ class ProfileController extends Controller
      */
     public function store(StoreProfileRequest $request)
     {
-        //
+        abort(404);
     }
 
     /**
