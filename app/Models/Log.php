@@ -18,7 +18,6 @@ class Log extends Model
 
     /**
      * Um Log pertence a um Utilizador (User).
-     * Esta relação pode ser nula (user_id [null]).
      */
     public function user(): BelongsTo
     {

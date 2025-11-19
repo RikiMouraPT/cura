@@ -20,11 +20,11 @@ class Notification extends Model
      * Define os casts para atributos específicos.
      */
     protected $casts = [
-        'active' => 'boolean',
+        'active' => 'boolean'
     ];
 
     /**
-     * Uma configuração de Notificação pertence a um Utilizador (User).
+     * Uma Notificação pertence a um Utilizador (User).
      */
     public function user(): BelongsTo
     {

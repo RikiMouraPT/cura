@@ -42,7 +42,6 @@ class Service extends Model
 
     /**
      * Um Serviço pertence a um Profissional (User).
-     * Esta relação pode ser nula.
      */
     public function professional(): BelongsTo
     {

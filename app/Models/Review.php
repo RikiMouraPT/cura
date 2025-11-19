@@ -33,7 +33,7 @@ class Review extends Model
     }
 
     /**
-     * Uma Avaliação (Review) pertence a um Utilizador (o autor).
+     * Uma Avaliação (Review) pertence a um Utilizador.
      */
     public function user(): BelongsTo
     {

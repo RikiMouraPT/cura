@@ -43,8 +43,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // RELAÇÕES
-
     /**
      * Um Utilizador tem um Perfil (Profile).
      */
