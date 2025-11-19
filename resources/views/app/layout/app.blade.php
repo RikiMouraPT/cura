@@ -105,7 +105,7 @@
         <div class="px-4 py-4 space-y-3">
             <a href="{{ route('app.service.index') }}" class="block text-gray-700 hover:text-teal-700 font-medium">Serviços</a>
             <a href="{{ route('app.review.index') }}" class="block text-gray-700 hover:text-teal-700 font-medium">Avaliações</a>
-            <a href="{{ route('app.profile.index') }}" class="block text-gray-700 hover:text-teal-700 font-medium">Perfil</a>
+            <a href="{{ route('app.profile.show') }}" class="block text-gray-700 hover:text-teal-700 font-medium">Perfil</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="block text-left w-full text-gray-700 hover:text-teal-700 font-medium">Terminar Sessão</button>
