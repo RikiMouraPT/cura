@@ -37,7 +37,8 @@ class ProfileController extends Controller
      */
     public function show(Profile $profile)
     {
-        //
+        $profile->load('medicalInfo', 'qualifications');
+
         return view('app.profile.show', compact('profile'));
     }
 
@@ -46,7 +47,8 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
-        //
+        $profile->load('medicalInfo', 'qualifications');
+
         return view('app.profile.edit', compact('profile'));
     }
 
@@ -55,12 +57,23 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfileRequest $request, Profile $profile)
     {
-        //
-        $profile->update($request->validated());
-        
-        $profile = Profile::findOrFail($profile->id);
-        // Update all profile fields to the requested values
-        
+        $data = $request->validated();
+
+        $profile->user()->update($data['user']);
+
+        $profile->update($data['profile']);
+
+        $profile->medicalInfo()->update($data['medical_info']);
+
+        // Tratar do upload do documento de qualificações, se houver
+        if (isset($data['qualifications']['document'])) {
+            $path = $data['qualifications']['document']
+                ->store('qualifications', 'public');
+
+            $data['qualifications']['document'] = $path;
+        }
+
+        $profile->qualifications()->update($data['qualifications']);
 
         return redirect()->route('app.profile.show', $profile)->with('success', 'Profile updated successfully.');
     }
