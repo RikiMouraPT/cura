@@ -30,10 +30,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
-
 // Para fins de testes das views e por isso estão fora do middleware 'auth'
 Route::get('/app', fn() => view('app.index'))->name('app.index');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::resource('service', ServiceController::class)->names('app.service');
-Route::resource('profile', ProfileController::class)->names('app.profile');
+Route::resource('profile', ProfileController::class)->names('app.profile')->except(['index', 'create', 'store']);
 Route::resource('review', ReviewController::class)->names('app.review');
