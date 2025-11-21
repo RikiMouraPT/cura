@@ -2,217 +2,262 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registo - Saúde Domiciliar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f766e">
 </head>
-<!-- Updated to gradient background and added py-12 for spacing -->
 <body class="bg-gradient-to-br from-teal-400 to-teal-900 min-h-screen py-12 px-4">
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-4xl mx-auto">
 
-        <!-- Updated card styling -->
         <div class="bg-white rounded-2xl shadow-md p-8">
-            <!-- Updated header with link to home -->
-        <div class="text-center mb-8">
-            <a href="index.html" class="inline-flex items-center justify-center w-14 h-14 bg-teal-600 rounded-xl mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-            </a>
-            <h1 class="text-3xl font-bold text-teal-900 mb-2">Criar Conta</h1>
-            <p class="text-teal-600">Junte-se à nossa plataforma</p>
-        </div>
-            <form id="registerForm" class="space-y-8">
-                <!-- Added user type selection -->
+            <div class="text-center mb-8">
+                <a href="/" class="inline-flex items-center justify-center w-14 h-14 bg-teal-600 rounded-xl mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </a>
+                <h1 class="text-3xl font-bold text-teal-900 mb-2">Criar Conta</h1>
+                <p class="text-teal-600">Preencha todos os dados para se juntar à plataforma</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r">
+                    <p class="font-bold">Por favor corrija os seguintes erros:</p>
+                    <ul class="list-disc list-inside text-sm mt-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                @csrf
+
                 <div>
-                    <label class="block text-sm font-medium text-teal-900 mb-3">Tipo de Utilizador</label>
+                    <label class="block text-sm font-medium text-teal-900 mb-3">Eu sou:</label>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <button type="button" class="user-type-btn py-3 px-4 rounded-xl font-medium transition-all bg-teal-600 text-white shadow-md" data-type="utente">Utente</button>
-                        <button type="button" class="user-type-btn py-3 px-4 rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="acompanhante">Acompanhante</button>
-                        <button type="button" class="user-type-btn py-3 px-4 rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="auxiliar">Auxiliar</button>
-                        <button type="button" class="user-type-btn py-3 px-4 rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="enfermeiro">Enfermeiro</button>
-                        <button type="button" class="user-type-btn py-3 px-4 rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="medico">Médico</button>
+                        <button type="button" class="user-type-btn py-3 px-2 text-sm md:text-base rounded-xl font-medium transition-all bg-teal-600 text-white shadow-md" data-type="patient">Utente</button>
+                        <button type="button" class="user-type-btn py-3 px-2 text-sm md:text-base rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="companion">Acompanhante</button>
+                        <button type="button" class="user-type-btn py-3 px-2 text-sm md:text-base rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="medical_assistant">Auxiliar</button>
+                        <button type="button" class="user-type-btn py-3 px-2 text-sm md:text-base rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="nurse">Enfermeiro</button>
+                        <button type="button" class="user-type-btn py-3 px-2 text-sm md:text-base rounded-xl font-medium transition-all bg-teal-50 text-teal-700 hover:bg-teal-100" data-type="doctor">Médico</button>
                     </div>
-                    <input type="hidden" id="userType" value="utente" required>
+                    <input type="hidden" name="profile[user_type]" id="userType" value="patient" required>
                 </div>
 
-                <!-- Added section header and improved layout -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-teal-900">Dados Pessoais</h3>
+                <div class="space-y-4 border-t border-gray-100 pt-6">
+                    <h3 class="text-lg font-semibold text-teal-900 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Dados Pessoais
+                    </h3>
 
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-teal-900 mb-2">Nome Completo</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <input type="text" id="name" required placeholder="João Silva"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="birthDate" class="block text-sm font-medium text-teal-900 mb-2">Data de Nascimento</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <input type="date" id="birthDate" required
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-medium text-teal-900 mb-2">Foto de Perfil</label>
+                        <input type="file" name="profile[profile_picture]" accept="image/*" 
+                            class="block w-full text-sm text-slate-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-teal-50 file:text-teal-700
+                            hover:file:bg-teal-100 transition-all cursor-pointer">
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label for="email" class="block text-sm font-medium text-teal-900 mb-2">Email</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                                <input type="email" id="email" required placeholder="joao@email.com"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Nome Completo *</label>
+                            <input type="text" name="user[name]" value="{{ old('user.name') }}" required placeholder="João Silva"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
                         </div>
-
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-teal-900 mb-2">Telemóvel</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
-                                <input type="tel" id="phone" required placeholder="+351 912 345 678"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Email *</label>
+                            <input type="email" name="user[email]" value="{{ old('user.email') }}" required placeholder="joao@email.com"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Data de Nascimento</label>
+                            <input type="date" name="profile[birth_date]" value="{{ old('profile.birth_date') }}"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Telemóvel</label>
+                            <input type="tel" name="profile[phone]" value="{{ old('profile.phone') }}" placeholder="+351..."
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                         <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">NIF</label>
+                            <input type="text" name="profile[tax_id]" value="{{ old('profile.tax_id') }}" placeholder="123456789"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Morada</label>
+                            <input type="text" name="profile[address]" value="{{ old('profile.address') }}" placeholder="Rua, Nº, Andar"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">NISS (Seg. Social)</label>
+                            <input type="text" name="profile[social_security_number]" value="{{ old('profile.social_security_number') }}" placeholder="123..."
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="medicalInfoSection" class="space-y-4 border-t border-gray-100 pt-6">
+                    <h3 class="text-lg font-semibold text-teal-900 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        Informações Médicas
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Tipo Sanguíneo</label>
+                            <select name="medical_info[blood_type]" class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white">
+                                <option value="">Selecione...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Contacto de Emergência</label>
+                            <input type="text" name="medical_info[emergency_contact]" value="{{ old('medical_info.emergency_contact') }}" placeholder="Nome e Telefone"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
                         </div>
                     </div>
 
                     <div>
-                        <label for="address" class="block text-sm font-medium text-teal-900 mb-2">Morada</label>
-                        <div class="relative">
-                            <svg class="absolute left-3 top-3 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <label class="block text-sm font-medium text-teal-900 mb-1">Alergias</label>
+                        <textarea name="medical_info[allergies]" rows="2" placeholder="Liste quaisquer alergias conhecidas..."
+                            class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none">{{ old('medical_info.allergies') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-teal-900 mb-1">Condições Médicas / Histórico</label>
+                        <textarea name="medical_info[medical_conditions]" rows="2" placeholder="Diabetes, Hipertensão, etc..."
+                            class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none">{{ old('medical_info.medical_conditions') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-teal-900 mb-1">Medicação Atual</label>
+                        <textarea name="medical_info[current_medications]" rows="2" placeholder="Nome do medicamento e dosagem..."
+                            class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none">{{ old('medical_info.current_medications') }}</textarea>
+                    </div>
+                </div>
+
+                <div id="professionalDocs" class="space-y-4 border-t border-gray-100 pt-6 hidden">
+                    <h3 class="text-lg font-semibold text-teal-900 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Qualificações
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-teal-900 mb-1">Resumo Profissional</label>
+                        <textarea name="qualifications[description]" rows="3" placeholder="Descreva a sua experiência profissional..."
+                            class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none">{{ old('qualifications.description') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-teal-900 mb-2">Comprovativo de Cédula/Habilitações</label>
+                        <div class="border-2 border-dashed border-teal-200 rounded-xl p-6 text-center hover:border-teal-400 transition-colors cursor-pointer relative bg-teal-50/30">
+                            <input type="file" name="qualifications[document]" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <svg class="w-8 h-8 text-teal-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
-                            <textarea id="address" required rows="2" placeholder="Rua, Número, Código Postal, Cidade"
-                                class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none transition-all"></textarea>
+                            <p class="text-sm text-teal-700 font-medium mb-1">Carregar Ficheiro</p>
+                            <p class="text-xs text-teal-500">PDF, JPG ou PNG (Máx 5MB)</p>
                         </div>
                     </div>
+                </div>
+
+                <div class="space-y-4 border-t border-gray-100 pt-6">
+                    <h3 class="text-lg font-semibold text-teal-900 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        Segurança da Conta
+                    </h3>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label for="nif" class="block text-sm font-medium text-teal-900 mb-2">NIF</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                                </svg>
-                                <input type="text" id="nif" required placeholder="123456789"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Palavra-passe *</label>
+                            <input type="password" name="user[password]" required placeholder="Min. 8 caracteres"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
                         </div>
-
-                    </div>
-                </div>
-
-                <!-- Added professional documents section (hidden by default) -->
-                <div id="professionalDocs" class="space-y-4 hidden">
-                    <h3 class="text-lg font-semibold text-teal-900">Documentos Profissionais</h3>
-                    <div class="border-2 border-dashed border-teal-200 rounded-xl p-6 text-center hover:border-teal-400 transition-colors cursor-pointer">
-                        <svg class="w-8 h-8 text-teal-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        <p class="text-sm text-teal-700 font-medium mb-1">Carregar licenças e comprovativos</p>
-                        <p class="text-xs text-teal-500">PDF, JPG ou PNG até 10MB</p>
-                        <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden">
-                    </div>
-                </div>
-
-                <!-- Added security section header -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-teal-900">Segurança</h3>
-
-                    <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label for="password" class="block text-sm font-medium text-teal-900 mb-2">Palavra-passe</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                </svg>
-                                <input type="password" id="password" required placeholder="••••••••"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="confirmPassword" class="block text-sm font-medium text-teal-900 mb-2">Confirmar Palavra-passe</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                </svg>
-                                <input type="password" id="confirmPassword" required placeholder="••••••••"
-                                    class="w-full pl-11 pr-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all">
-                            </div>
+                            <label class="block text-sm font-medium text-teal-900 mb-1">Confirmar Palavra-passe *</label>
+                            <input type="password" name="user[password_confirmation]" required placeholder="Repita a palavra-passe"
+                                class="w-full px-4 py-3 border border-teal-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all">
                         </div>
                     </div>
                 </div>
 
-                <!-- Updated button layout -->
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button type="submit" id="registerBtn"
-                        class="flex-1 bg-teal-600 hover:bg-teal-700 focus:bg-teal-700 text-white font-semibold py-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50">
-                        Registar
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <button type="submit"
+                        class="flex-1 bg-teal-600 hover:bg-teal-700 focus:bg-teal-700 text-white font-semibold py-4 rounded-xl transition-colors shadow-lg shadow-teal-200">
+                        Criar Conta
                     </button>
-                    <a href="{{ route('landing') }}"
-                        class="flex-1 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold py-3 rounded-xl transition-colors text-center">
+                    <a href="/"
+                        class="flex-1 bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold py-4 rounded-xl transition-colors text-center border border-teal-100">
                         Cancelar
                     </a>
                 </div>
             </form>
 
-            <!-- Updated footer text -->
             <div class="mt-6 text-center">
                 <p class="text-sm text-teal-600">
-                    Já tem conta?
-                    <a href="{{ route('login') }}" class="font-semibold text-teal-700 hover:text-teal-800 transition-colors">
-                        Entrar
-                    </a>
+                    Já tem conta? <a href="{{ route('login') }}" class="font-bold text-teal-700 hover:text-teal-900 underline">Entrar</a>
                 </p>
             </div>
         </div>
     </div>
 
     <script>
-        // User type selection
         document.querySelectorAll('.user-type-btn').forEach(btn => {
             btn.addEventListener('click', function() {
+                // 1. Reset Visual dos Botões
                 document.querySelectorAll('.user-type-btn').forEach(b => {
                     b.classList.remove('bg-teal-600', 'text-white', 'shadow-md');
                     b.classList.add('bg-teal-50', 'text-teal-700');
                 });
+                
+                // 2. Ativar Botão Clicado
                 this.classList.remove('bg-teal-50', 'text-teal-700');
                 this.classList.add('bg-teal-600', 'text-white', 'shadow-md');
-                document.getElementById('userType').value = this.dataset.type;
                 
-                // Show/hide professional documents section
-                const isProfessional = ['auxiliar', 'enfermeiro', 'medico'].includes(this.dataset.type);
-                document.getElementById('professionalDocs').classList.toggle('hidden', !isProfessional);
-            });
-        });
+                // 3. Atualizar Input Hidden
+                const userType = this.dataset.type;
+                document.getElementById('userType').value = userType;
+                
+                // 4. Lógica de Mostrar/Esconder Secções
+                const professionalSection = document.getElementById('professionalDocs');
+                const medicalSection = document.getElementById('medicalInfoSection');
 
-        // Handle registration with loading state
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('registerBtn');
-            btn.disabled = true;
-            btn.textContent = 'A registar...';
-            
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
+                const isProfessional = ['medical_assistant', 'nurse', 'doctor'].includes(userType);
+                const isPatient = (userType === 'patient');
+
+                // Toggle Profissional
+                if (isProfessional) {
+                    professionalSection.classList.remove('hidden');
+                } else {
+                    professionalSection.classList.add('hidden');
+                }
+
+                // Toggle Utente (Médico)
+                if (isPatient) {
+                    medicalSection.classList.remove('hidden');
+                } else {
+                    medicalSection.classList.add('hidden');
+                }
+            });
         });
     </script>
 </body>

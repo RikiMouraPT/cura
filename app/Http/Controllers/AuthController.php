@@ -6,7 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Enums\Role;
+use Illuminate\Support\Facades\DB;
+use App\Enums\UserType;
 
 class AuthController extends Controller
 {
@@ -44,39 +45,61 @@ class AuthController extends Controller
             'qualifications.document' => 'nullable|file|max:5120',
         ]);
 
-        $user = User::create([
-            'name' => $data['user']['name'],
-            'email' => $data['user']['email'],
-            'password' => Hash::make($data['user']['password']),
-            'role' => Role::from($data['profile']['user_type']),
-        ]);
+        $user = DB::transaction(function () use ($data) {
+            
+            $user = User::create([
+                'name' => $data['user']['name'],
+                'email' => $data['user']['email'],
+                'password' => Hash::make($data['user']['password']),
+            ]);
 
-        $profile = $user->profile()->create([
-            'phone' => $data['profile']['phone'] ?? null,
-            'birth_date' => $data['profile']['birth_date'] ?? null,
-            'address' => $data['profile']['address'] ?? null,
-            'tax_id' => $data['profile']['tax_id'] ?? null,
-            'social_security_number' => $data['profile']['social_security_number'] ?? null,
-        ]);
+            $profilePhotoPath = null;
+            if (isset($data['profile']['profile_picture'])) {
+                $profilePhotoPath = $data['profile']['profile_picture']->store('profiles', 'public');
+            }
+            $user->profile()->create([
+                'phone' => $data['profile']['phone'] ?? null, 
+                'profile_photo' => $profilePhotoPath,
+                'user_type' => $data['profile']['user_type'],
+                'birth_date' => $data['profile']['birth_date'] ?? null,
+                'address' => $data['profile']['address'] ?? null,
+                'tax_id' => $data['profile']['tax_id'] ?? null,
+                'social_security_number' => $data['profile']['social_security_number'] ?? null,
+            ]);
 
-        $profile->medicalInfo()->create([
-            'blood_type' => $data['medical_info']['blood_type'] ?? null,
-            'allergies' => $data['medical_info']['allergies'] ?? null,
-            'medical_conditions' => $data['medical_info']['medical_conditions'] ?? null,
-            'current_medications' => $data['medical_info']['current_medications'] ?? null,
-            'emergency_contact' => $data['medical_info']['emergency_contact'] ?? null,
-        ]);
+            if ($data['profile']['user_type'] === UserType::PATIENT) {
+                $user->medicalInfo()->create([
+                    'blood_type' => $data['medical_info']['blood_type'] ?? null,
+                    'allergies' => $data['medical_info']['allergies'] ?? null,
+                    'medical_conditions' => $data['medical_info']['medical_conditions'] ?? null,
+                    'current_medications' => $data['medical_info']['current_medications'] ?? null,
+                    'emergency_contact' => $data['medical_info']['emergency_contact'] ?? null,
+                ]);
+            }
 
-        $profile->qualifications()->create([
-            'description' => $data['qualifications']['description'] ?? null,
-            'document_path' => isset($data['qualifications']['document']) ? $data['qualifications']['document']->store('qualifications', 'public'   ) : null,
-        ]);
+            $professionals = [UserType::MEDICAL_ASSISTANT, UserType::NURSE, UserType::DOCTOR];
+            
+            if (in_array($data['profile']['user_type'], $professionals)) {
+                $docPath = null;
+                if (isset($data['qualifications']['document'])) {
+                    $docPath = $data['qualifications']['document']->store('qualifications', 'public');
+                }
+
+                if (!empty($data['qualifications']['description']) || $docPath) {
+                    $user->qualifications()->create([
+                        'description' => $data['qualifications']['description'] ?? null,
+                        'document' => $docPath,
+                    ]);
+                }
+            }
+
+            return $user;
+        });
 
         Auth::login($user);
 
         return redirect()->route('app.index');
     }
-
 
     public function showLoginForm()
     {
