@@ -3,49 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AppController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        
-        // Carrega a relação profile para evitar n+1 queries
-        $user->load('profile');
-
-        // Determina se é paciente ou profissional
-        // Nota: Ajusta 'patient' conforme está gravado na tua BD (ex: 'Patient' ou 'patient')
-        $isPatient = strtolower($user->profile->user_type) === 'patient';
-
-        if ($isPatient) {
-            // Se for paciente, quer ver os serviços onde é o paciente
-            // E quer ver os dados do Profissional associado
-            $query = $user->servicesAsPatient();
-        } else {
-            // Se for profissional, quer ver os serviços onde é o profissional
-            // E quer ver os dados do Paciente associado
-            $query = $user->servicesAsProfessional();
-        }
-
-        // 1. Calcular Estatísticas
-        // Clonamos a query para não interferir na lista principal
+   
+        // --- DADOS DE TESTE ---
+        // 1. Mock das Estatísticas
         $stats = [
-            'pending' => (clone $query)->where('status', 'Pending')->count(), // Ajusta 'Pending' conforme o teu Enum
-            'active' => (clone $query)->where('status', 'Accepted')->count(),
-            'completed' => (clone $query)->where('status', 'Completed')->count(),
-            // Exemplo de média de avaliação (opcional, requer relação reviews)
+            'pending' => 3,
+            'active' => 2,
+            'completed' => 24,
             'rating' => 4.8, 
         ];
+        // 2. Mock dos Serviços
+        // 'collect' para simular uma coleção do Eloquent
+        // (object) para simular Models
+        // Carbon::parse para simular campos de data/hora
+        $recentServices = collect([
+            (object) [
+                'id' => 1,
+                'service_type' => 'Enfermagem Domiciliária',
+                'date' => Carbon::parse('2024-06-15'),
+                'time' => Carbon::parse('14:30'),
+                'status' => 'Pending',
+                'patient' => (object) ['name' => 'Alice Johnson'],
+                'professional' => (object) ['name' => 'Enf. Ana Silva'],
+            ],
+            (object) [
+                'id' => 2,
+                'service_type' => 'Consulta Médica Geral',
+                'date' => Carbon::parse('2024-06-10'),
+                'time' => Carbon::parse('09:00'),
+                'status' => 'Accepted',
+                'patient' => (object) ['name' => 'Bob Brown'],
+                'professional' => (object) ['name' => 'Dr. Emily Smith'],
+            ],
+            (object) [
+                'id' => 3,
+                'service_type' => 'Fisioterapia',
+                'date' => Carbon::parse('2024-06-05'),
+                'time' => Carbon::parse('16:45'),
+                'status' => 'Completed',
+                'patient' => (object) ['name' => 'Carlos Ruiz'],
+                'professional' => (object) ['name' => 'Dr. João Santos'],
+            ],
+            (object) [
+                'id' => 4,
+                'service_type' => 'Apoio Domiciliário',
+                'date' => Carbon::parse('2024-06-01'),
+                'time' => Carbon::parse('11:00'),
+                'status' => 'Cancelled',
+                'patient' => (object) ['name' => 'Diana Prince'],
+                'professional' => (object) ['name' => 'Aux. Maria Costa'],
+            ],
+        ]);
 
-        // 2. Buscar Lista Recente
-        // Ordena por data mais recente, limita a 5 e carrega as relações para performance
-        $recentServices = $query->with(['patient', 'professional'])
-                                ->latest('date')
-                                ->take(5)
-                                ->get();
-
-        return view('app.index', compact('recentServices', 'stats', 'isPatient'));
+        return view('app.index', compact('recentServices', 'stats'));
     }
 }
