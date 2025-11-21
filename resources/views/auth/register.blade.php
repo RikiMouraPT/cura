@@ -31,7 +31,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
 
                 <div>

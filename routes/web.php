@@ -37,8 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('profile', ProfileController::class)->names('app.profile')->except(['index', 'create', 'store']);
     Route::resource('review', ReviewController::class)->names('app.review');
 
-    Route::get('/login', fn() => redirect()->route('app.index'));
-    Route::get('/register', fn() => redirect()->route('app.index'));
+    Route::get('/login', fn() => redirect()->route('app.index'))->name('login');
+    Route::get('/register', fn() => redirect()->route('app.index'))->name('register');
 });
 
 // Fallback route for undefined paths
