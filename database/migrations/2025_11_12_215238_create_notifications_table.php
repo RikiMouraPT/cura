@@ -11,21 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        /*
-        Table Notifications {
-  id int [pk, increment]
-  user_id int [ref: > Users.id]
-  type enum('Push', 'Email', 'SMS')
-  active boolean
-  created_at timestamp
-  updated_at timestamp
-}
-         */
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('type', ['push', 'email', 'sms']);
-            $table->boolean('active')->default(true);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('action_url')->nullable();
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }

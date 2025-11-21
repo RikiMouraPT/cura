@@ -12,15 +12,18 @@ class Notification extends Model
 
     protected $fillable = [
         'user_id',
+        'title',
+        'description',
         'type',
-        'active',
+        'action_url',
+        'read_at',
     ];
 
     /**
      * Define os casts para atributos específicos.
      */
     protected $casts = [
-        'active' => 'boolean'
+        'read_at' => 'datetime'
     ];
 
     /**
@@ -29,5 +32,16 @@ class Notification extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Filtrar notificações não lidas com $user->notifications()->unread()->get();
+    public function scopeUnread($query)
+    {
+        return $query->whereNull('read_at');
+    }
+
+    public function markAsRead()
+    {
+        $this->update(['read_at' => now()]);
     }
 }
